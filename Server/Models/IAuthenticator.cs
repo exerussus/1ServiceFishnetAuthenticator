@@ -1,15 +1,20 @@
 ﻿using System.Collections.Generic;
 using Exerussus.Servecies;
+using FishNet.Managing.Server;
 
 namespace Source.Features.GameAuthentication.Server.Models
 {
     public abstract class Authenticator : ServiceModule
     {
+        private ServerManager _serverManager;
         protected abstract float DataCheckTimeout { get; }
         protected Dictionary<int, ConnectionContext> InProcess;
 
-        public Authenticator SetProcess(Dictionary<int, ConnectionContext> inProcess)
+        public ServerManager ServerManager => _serverManager;
+
+        public Authenticator SetProcess(Dictionary<int, ConnectionContext> inProcess, ServerManager serverManager)
         {
+            _serverManager = serverManager;
             InProcess = inProcess;
             return this;
         }

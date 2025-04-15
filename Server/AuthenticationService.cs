@@ -39,7 +39,8 @@ namespace Source.Features.GameAuthentication.Server
         {
             _inProcess = new();
             var auths =  CreateAuthenticators();
-            foreach (var a in auths) a.SetProcess(_inProcess);
+            var serverManger = GameShare.GetSharedObject<ServerManager>();
+            foreach (var a in auths) a.SetProcess(_inProcess, serverManger);
             var modules = auths.Cast<ServiceModule>().ToList();
             serviceCollector.Add(modules);
         }
