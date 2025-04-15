@@ -6,12 +6,14 @@ namespace Source.Features.GameAuthentication.Server.Models
     public abstract class Authenticator : ServiceModule
     {
         protected abstract float DataCheckTimeout { get; }
-        protected Dictionary<int, ConnectionContext> _inProcess;
+        protected Dictionary<int, ConnectionContext> InProcess;
 
         public Authenticator SetProcess(Dictionary<int, ConnectionContext> inProcess)
         {
-            _inProcess = inProcess;
+            InProcess = inProcess;
             return this;
         }
+        
+        public abstract void OnAuthenticationSuccess(ConnectionContext context);
     }
 }

@@ -110,8 +110,7 @@ namespace Source.Features.GameAuthentication.Server
                     _authenticated[clientId] = context;
                     context.IsAuthenticated = true;
                     _serviceAuthenticator.SetAuthResult(context.NetworkConnection, true);
-                    Debug.Log($"Client {context.NetworkConnection.ClientId} has been authenticated.");
-                    Signal.RegistryRaise(new OnClientAuthenticatedSignal { Connection = context.NetworkConnection });
+                    context.Authenticator.OnAuthenticationSuccess(context);
                 }
 
                 _approvedList.Clear();

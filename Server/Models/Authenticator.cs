@@ -12,7 +12,6 @@ namespace Source.Features.GameAuthentication.Server.Models
     public abstract class Authenticator<T> : Authenticator where T : struct, IBroadcast
     {
         [InjectSharedObject] private ServerManager _serverManager;
-        public readonly Type AuthDataType = typeof(T);
 
         public override void Initialize()
         {
@@ -22,11 +21,13 @@ namespace Source.Features.GameAuthentication.Server.Models
 
         protected void OnAuthData(NetworkConnection connection, T data, Channel channel)
         {
-            if (!_inProcess.TryGetValue(connection.ClientId, out var context))
+            if (!InProcess.TryGetValue(connection.ClientId, out var context))
             {
                 connection.Kick(KickReason.Unset, LoggingType.Warning, "Authentication not found.");
                 return;
             }
+
+            context.Authenticator = this;
             
             try
             {
