@@ -1,0 +1,18 @@
+{
+    "name": "com.exerussus.service.fishnet.authenticator",
+    "rootNamespace": "",
+    "references": [
+        "GUID:7c88a4a7926ee5145ad2dfa06f454c67",
+        "GUID:c4200ad358d814249aebaa53c153e26e",
+        "GUID:5d2496e3961aab04698216f31a3d9282"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
