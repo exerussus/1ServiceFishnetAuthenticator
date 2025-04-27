@@ -16,8 +16,8 @@ namespace Source.Features.GameAuthentication.Server
 {
     public abstract class AuthenticationService : Service, IModuleUpdate
     {
-        [InjectSharedObject] private ServerManager _serverManager;
-        [InjectSharedObject] private NetworkManager _networkManager;
+        protected ServerManager ServerManager;
+        protected NetworkManager NetworkManager;
         private ServiceAuthenticator _serviceAuthenticator;
 
         private float _nextTimeUpdate;
@@ -38,9 +38,12 @@ namespace Source.Features.GameAuthentication.Server
         
         public override void PreInitialize()
         {
-            if (!_networkManager.gameObject.TryGetComponent(out _serviceAuthenticator))
+            GameShare.GetSharedObject(ref ServerManager);
+            GameShare.GetSharedObject(ref NetworkManager);
+            
+            if (!NetworkManager.gameObject.TryGetComponent(out _serviceAuthenticator))
             {
-                _serviceAuthenticator = _networkManager.gameObject.AddComponent<ServiceAuthenticator>();
+                _serviceAuthenticator = NetworkManager.gameObject.AddComponent<ServiceAuthenticator>();
             }
         }
 
@@ -58,9 +61,9 @@ namespace Source.Features.GameAuthentication.Server
 
         public override void Initialize()
         {
-            _serverManager.SetAuthenticator(_serviceAuthenticator);
-            _serverManager.OnRemoteConnectionState += OnConnectionStateChanged;
-            if (AutoStartServerConnection) _serverManager.StartConnection();
+            ServerManager.SetAuthenticator(_serviceAuthenticator);
+            ServerManager.OnRemoteConnectionState += OnConnectionStateChanged;
+            if (AutoStartServerConnection) ServerManager.StartConnection();
         }
 
         private void OnConnectionStateChanged(NetworkConnection connection, RemoteConnectionStateArgs data)
