@@ -33,6 +33,8 @@ namespace Source.Features.GameAuthentication.Server
         // Добавлять новые аутентификаторы сюда
         protected abstract List<Authenticator> CreateAuthenticators();
         protected abstract bool AutoStartServerConnection { get; }
+        protected virtual void OnClientConnected(ConnectionContext connection) { }
+        protected virtual void OnClientDisconnected(ConnectionContext connection) { }
         
         public override void PreInitialize()
         {
@@ -69,8 +71,8 @@ namespace Source.Features.GameAuthentication.Server
 
         public void OnClientDisconnected(NetworkConnection connection)
         {
-            _inProcess.TryPop(connection.ClientId, out _);
-            _authenticated.TryPop(connection.ClientId, out _);
+            if (_inProcess.TryPop(connection.ClientId, out var context)) OnClientDisconnected(context);
+            else if (_authenticated.TryPop(connection.ClientId, out context)) OnClientDisconnected(context);
         }
 
         public void OnClientConnected(NetworkConnection connection)
@@ -83,6 +85,7 @@ namespace Source.Features.GameAuthentication.Server
             
             _inProcess.Add(connection.ClientId, context);
             Debug.Log($"Added client {connection.ClientId} to authentication queue.");
+            OnClientConnected(context);
         }
 
         public void Update(float deltaTime)
