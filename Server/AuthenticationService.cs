@@ -32,7 +32,8 @@ namespace Source.Features.GameAuthentication.Server
 
         // Добавлять новые аутентификаторы сюда
         protected abstract List<Authenticator> CreateAuthenticators();
-
+        protected abstract bool AutoStartServerConnection { get; }
+        
         public override void PreInitialize()
         {
             if (!_networkManager.gameObject.TryGetComponent(out _serviceAuthenticator))
@@ -57,7 +58,7 @@ namespace Source.Features.GameAuthentication.Server
         {
             _serverManager.SetAuthenticator(_serviceAuthenticator);
             _serverManager.OnRemoteConnectionState += OnConnectionStateChanged;
-            _serverManager.StartConnection();
+            if (AutoStartServerConnection) _serverManager.StartConnection();
         }
 
         private void OnConnectionStateChanged(NetworkConnection connection, RemoteConnectionStateArgs data)
