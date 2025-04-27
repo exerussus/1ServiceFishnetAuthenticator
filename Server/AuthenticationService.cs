@@ -33,8 +33,8 @@ namespace Source.Features.GameAuthentication.Server
         // Добавлять новые аутентификаторы сюда
         protected abstract List<Authenticator> CreateAuthenticators();
         protected abstract bool AutoStartServerConnection { get; }
-        protected virtual void OnClientConnected(ConnectionContext connection) { }
-        protected virtual void OnClientDisconnected(ConnectionContext connection) { }
+        protected virtual void OnClientConnected(ConnectionContext context) { }
+        protected virtual void OnClientDisconnected(ConnectionContext context) { }
         
         public override void PreInitialize()
         {
