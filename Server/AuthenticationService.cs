@@ -18,7 +18,7 @@ namespace Source.Features.GameAuthentication.Server
     {
         [InjectSharedObject] private ServerManager _serverManager;
         [InjectSharedObject] private NetworkManager _networkManager;
-        [InjectSharedObject] private ServiceAuthenticator _serviceAuthenticator;
+        private ServiceAuthenticator _serviceAuthenticator;
 
         private float _nextTimeUpdate;
         
@@ -32,6 +32,14 @@ namespace Source.Features.GameAuthentication.Server
 
         // Добавлять новые аутентификаторы сюда
         protected abstract List<Authenticator> CreateAuthenticators();
+
+        public override void PreInitialize()
+        {
+            if (!_networkManager.gameObject.TryGetComponent(out _serviceAuthenticator))
+            {
+                _serviceAuthenticator = _networkManager.gameObject.AddComponent<ServiceAuthenticator>();
+            }
+        }
 
         #region Methods
 
