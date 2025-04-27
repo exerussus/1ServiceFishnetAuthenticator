@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Exerussus._1EasyEcs.Scripts.Core;
 using Exerussus._1Extensions.Scripts.Extensions;
@@ -29,12 +30,12 @@ namespace Source.Features.GameAuthentication.Server
 
         private const float AuthenticationTimeout = 5f;
         public float UpdateDelay => 0.5f;
-
-        // Добавлять новые аутентификаторы сюда
+        
         protected abstract List<Authenticator> CreateAuthenticators();
         protected abstract bool AutoStartServerConnection { get; }
         protected virtual void OnClientConnected(ConnectionContext context) { }
         protected virtual void OnClientDisconnected(ConnectionContext context) { }
+        protected virtual void OnClientAuthenticated(ConnectionContext context) { }
         
         public override void PreInitialize()
         {
@@ -68,8 +69,28 @@ namespace Source.Features.GameAuthentication.Server
 
         private void OnConnectionStateChanged(NetworkConnection connection, RemoteConnectionStateArgs data)
         {
-            if (data.ConnectionState == RemoteConnectionState.Started) OnClientConnected(connection);
-            else OnClientDisconnected(connection);
+            if (data.ConnectionState == RemoteConnectionState.Started)
+            {
+                try
+                {
+                    OnClientConnected(connection);
+                }
+                catch (Exception e)
+                {
+                    Debug.Log(e.Message + "\n" + e.StackTrace);
+                }
+            }
+            else
+            {
+                try
+                {
+                    OnClientDisconnected(connection);
+                }
+                catch (Exception e)
+                {
+                    Debug.Log(e.Message + "\n" + e.StackTrace);
+                }
+            }
         }
 
         public void OnClientDisconnected(NetworkConnection connection)
@@ -127,6 +148,15 @@ namespace Source.Features.GameAuthentication.Server
                     context.IsAuthenticated = true;
                     _serviceAuthenticator.SetAuthResult(context.NetworkConnection, true);
                     context.Authenticator.OnAuthenticationSuccess(context);
+                    
+                    try
+                    {
+                        OnClientAuthenticated(context);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.Log(e.Message + "\n" + e.StackTrace);
+                    }
                 }
 
                 _approvedList.Clear();
