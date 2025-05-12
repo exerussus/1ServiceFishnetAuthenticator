@@ -20,6 +20,6 @@ namespace Source.Features.GameAuthentication.Server.Models
         }
         
         public virtual void OnAuthenticationSuccess(ConnectionContext context) { }
-        protected abstract void OnAuthenticatedClientDisconnected(ConnectionContext context);
+        protected virtual void OnAuthenticatedClientDisconnected(ConnectionContext context) { }
     }
 }
