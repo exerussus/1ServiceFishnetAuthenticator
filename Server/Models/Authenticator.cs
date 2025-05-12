@@ -25,6 +25,7 @@ namespace Source.Features.GameAuthentication.Server.Models
             }
 
             context.Authenticator = this;
+            context.OnClientDisconnectedAction = OnAuthenticatedClientDisconnected;
             
             OnDataCheck(context, data);
 

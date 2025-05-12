@@ -96,11 +96,7 @@ namespace Source.Features.GameAuthentication.Server
         public void OnClientDisconnected(NetworkConnection connection)
         {
             if (_inProcess.TryPop(connection.ClientId, out var context)) OnClientDisconnected(context);
-            else if (_authenticated.TryPop(connection.ClientId, out context))
-            {
-                context.OnClientDisconnectedAction?.Invoke(context);
-                OnClientDisconnected(context);
-            }
+            else if (_authenticated.TryPop(connection.ClientId, out context)) OnClientDisconnected(context);
         }
 
         public void OnClientConnected(NetworkConnection connection)

@@ -1,4 +1,5 @@
 ﻿
+using System;
 using FishNet.Connection;
 
 namespace Source.Features.GameAuthentication.Server.Models
@@ -11,6 +12,7 @@ namespace Source.Features.GameAuthentication.Server.Models
         public bool IsAuthenticated { get; set; }
         public bool DataApproved { get; set; }
         public float KickTime { get; set; }
+        public Action<ConnectionContext> OnClientDisconnectedAction { get; set; }
         public object Data;
 
         public static implicit operator NetworkConnection(ConnectionContext context) => context.NetworkConnection;

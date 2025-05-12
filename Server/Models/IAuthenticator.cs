@@ -19,6 +19,7 @@ namespace Source.Features.GameAuthentication.Server.Models
             return this;
         }
         
-        public abstract void OnAuthenticationSuccess(ConnectionContext context);
+        public virtual void OnAuthenticationSuccess(ConnectionContext context) { }
+        protected abstract void OnAuthenticatedClientDisconnected(ConnectionContext context);
     }
 }
