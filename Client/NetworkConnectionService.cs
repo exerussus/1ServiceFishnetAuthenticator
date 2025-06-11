@@ -14,15 +14,18 @@ namespace Source.Features.GameAuthentication.Client
         [InjectSharedObject] private NetworkManager _networkManager;
         [InjectSharedObject] private ClientManager _clientManager;
 
+        private Action _onStopConnection;
         private Action _onConnectedDataSending;
         private bool _isRunning;
-        
+
+        public bool IsRunning => _isRunning;
+
         public override void Initialize()
         {
             _clientManager.OnClientConnectionState += OnConnected;
         }
 
-        public void RunConnection<T>(T data) where T : struct, IBroadcast
+        public void RunConnection<T>(T data, Action onStopConnection = null) where T : struct, IBroadcast
         {
             if (_isRunning)
             {
@@ -31,19 +34,21 @@ namespace Source.Features.GameAuthentication.Client
             }
             
             _isRunning = true;
+            _onStopConnection = onStopConnection;
             _onConnectedDataSending = () => { _clientManager.Broadcast(data); };
             _clientManager.StartConnection();
         }
 
         private void OnConnected(ClientConnectionStateArgs data)
         {
-            if ((data.ConnectionState & LocalConnectionState.Started) != 0)
+            if (data.ConnectionState == LocalConnectionState.Started)
             {
                 _onConnectedDataSending?.Invoke();
             }
-            else if ((data.ConnectionState & LocalConnectionState.Stopped) != 0)
+            else if (data.ConnectionState == LocalConnectionState.Stopped)
             {
                 _isRunning = false;
+                _onStopConnection?.Invoke();
             }
         }
     }
